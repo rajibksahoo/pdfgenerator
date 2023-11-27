@@ -12,6 +12,7 @@ import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.mmdt.pdfgenerator.dietplan.MealPlanGenerator;
 
+import java.io.File;
 import java.net.MalformedURLException;
 
 public class MealPlanGeneratorImpl implements MealPlanGenerator {
@@ -53,8 +54,16 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
     }
 
     private String getVersionedFileName(String baseDest, int versionCounter, String fileName) {
-        return baseDest +  fileName + "_V" + versionCounter + ".pdf";
+        String dest = baseDest + fileName + "_V" + versionCounter + ".pdf";
+
+        while (new File(dest).exists()) {
+            versionCounter++;
+            dest = baseDest + fileName + "_V" + versionCounter + ".pdf";
+        }
+
+        return dest;
     }
+
 
     private void addImageToDocument(Document document, String imagePath, boolean isHeader) throws MalformedURLException {
         Image image = new Image(ImageDataFactory.create(imagePath));
