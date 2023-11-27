@@ -11,22 +11,28 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.TextAlignment;
+import com.mmdt.pdfgenerator.config.PdfConfig;
 import com.mmdt.pdfgenerator.dietplan.MealPlanGenerator;
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.io.File;
 import java.net.MalformedURLException;
 
 @Slf4j
+@Service
 public class MealPlanGeneratorImpl implements MealPlanGenerator {
 
-    private static String baseDest = "C:/Users/Admin/Downloads/dietplans_output/";
-    private static String headerPngPath = "C:/Users/Admin/Downloads/dietplans_output/source/MMDT_Header.png";
-    private static String footerPngPath = "C:/Users/Admin/Downloads/dietplans_output/source/MMDT_Footer.png";
+    private final PdfConfig pdfConfig;
+
+    @Autowired
+    public MealPlanGeneratorImpl(PdfConfig pdfConfig) {
+        this.pdfConfig = pdfConfig;
+    }
 
     @Override
     public String generateMealPlanPDF(String fileName) {
-        String dest = getVersionedFileName(baseDest, fileName);
+        String dest = getVersionedFileName(pdfConfig.getBaseDest(), fileName);
 
         try (PdfWriter writer = new PdfWriter(dest);
              PdfDocument pdfDoc = new PdfDocument(writer);
@@ -52,7 +58,6 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
         }
     }
 
-
     private String getVersionedFileName(String baseDest, String fileName) {
         int versionCounter = 1;
         String dest = baseDest + fileName + "_V" + versionCounter + ".pdf";
@@ -64,7 +69,6 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
 
         return dest;
     }
-
 
     private static void addImageToDocument(Document document, String imagePath, boolean isHeader) throws MalformedURLException {
         Image image = new Image(ImageDataFactory.create(imagePath));
@@ -107,24 +111,25 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
         e.printStackTrace();
     }
 
-    private static void addDefaultHeaderAndFooter(Document document) throws MalformedURLException {
+    private  void addDefaultHeaderAndFooter(Document document) throws MalformedURLException {
         // Adding default header
-        addImageToDocument(document, headerPngPath, true);
+        addImageToDocument(document, pdfConfig.getHeaderPngPath(), true);
 
         // Adding default footer
-        addImageToDocument(document, footerPngPath, false);
+        addImageToDocument(document, pdfConfig.getFooterPngPath(), false);
     }
 
-    private static void addNewPageWithHeaderAndFooter(Document document) throws MalformedURLException {
+    private void addNewPageWithHeaderAndFooter(Document document) throws MalformedURLException {
         document.add(new AreaBreak());
 
         // Adding header for the new page
-        addImageToDocument(document, headerPngPath, true);
+        addImageToDocument(document, pdfConfig.getHeaderPngPath(), true);
 
         // Adding table area for the new page
         addTableArea(document);
 
         // Adding footer for the new page
-        addImageToDocument(document, footerPngPath, false);
+        addImageToDocument(document, pdfConfig.getFooterPngPath(), false);
     }
 }
+

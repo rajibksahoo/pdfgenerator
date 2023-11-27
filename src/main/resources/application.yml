@@ -1,0 +1,5 @@
+pdf:
+  baseDest: "C:/Users/Admin/Downloads/dietplans_output/"
+  headerPngPath: "C:/Users/Admin/Downloads/dietplans_output/source/MMDT_Header.png"
+  footerPngPath: "C:/Users/Admin/Downloads/dietplans_output/source/MMDT_Footer.png"
+
