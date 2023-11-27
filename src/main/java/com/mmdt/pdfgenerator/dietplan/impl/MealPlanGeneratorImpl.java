@@ -12,11 +12,12 @@ import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.mmdt.pdfgenerator.dietplan.MealPlanGenerator;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.net.MalformedURLException;
 
-
+@Slf4j
 public class MealPlanGeneratorImpl implements MealPlanGenerator {
 
     private static String baseDest = "C:/Users/Admin/Downloads/dietplans_output/";
@@ -43,7 +44,7 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
             // Generate the second page with the same header and footer
             addNewPageWithHeaderAndFooter(document);
 
-            System.out.println("PDF Created: " + dest);
+            log.info("PDF Created: " + dest);
             return dest;
         } catch (Exception e) {
             handleException(e);
@@ -102,7 +103,7 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
     }
 
     private void handleException(Exception e) {
-        System.err.println("An error occurred: " + e.getMessage());
+        log.error("An error occurred: " + e.getMessage());
         e.printStackTrace();
     }
 
