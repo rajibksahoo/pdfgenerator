@@ -13,12 +13,6 @@ public class MealPlanRunner {
         // Invoke the generateMealPlanPDF method
         String generatedFileName = mealPlanGenerator.generateMealPlanPDF(samplePlan);
 
-        // Print the generated file name
-        if (generatedFileName != null) {
-            System.out.println("Generated PDF file: " + generatedFileName);
-        } else {
-            System.out.println("PDF generation failed.");
-        }
     }
 }
 

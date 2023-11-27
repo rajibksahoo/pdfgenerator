@@ -5,6 +5,7 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
@@ -15,6 +16,7 @@ import com.mmdt.pdfgenerator.dietplan.MealPlanGenerator;
 import java.io.File;
 import java.net.MalformedURLException;
 
+
 public class MealPlanGeneratorImpl implements MealPlanGenerator {
 
     private static String baseDest = "C:/Users/Admin/Downloads/dietplans_output/";
@@ -23,28 +25,24 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
 
     @Override
     public String generateMealPlanPDF(String fileName) {
-        try {
-            int versionCounter = 1;
+        String dest = getVersionedFileName(baseDest, fileName);
 
-            String dest = getVersionedFileName(baseDest, versionCounter, fileName);
-            PdfWriter writer = new PdfWriter(dest);
+        try (PdfWriter writer = new PdfWriter(dest);
+             PdfDocument pdfDoc = new PdfDocument(writer);
+             Document document = new Document(pdfDoc)) {
 
-            PdfDocument pdfDoc = new PdfDocument(writer);
             pdfDoc.setDefaultPageSize(PageSize.A4);
-
-            Document document = new Document(pdfDoc);
             document.setMargins(0, 0, 0, 0);
 
-            // Adding header
-            addImageToDocument(document, headerPngPath, true);
+            // Adding default header and footer for the first page
+            addDefaultHeaderAndFooter(document);
 
-            // Adding table area
+            // Adding table area for the first page
             addTableArea(document);
 
-            // Adding footer
-            addImageToDocument(document, footerPngPath, false);
+            // Generate the second page with the same header and footer
+            addNewPageWithHeaderAndFooter(document);
 
-            document.close();
             System.out.println("PDF Created: " + dest);
             return dest;
         } catch (Exception e) {
@@ -53,7 +51,9 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
         }
     }
 
-    private String getVersionedFileName(String baseDest, int versionCounter, String fileName) {
+
+    private String getVersionedFileName(String baseDest, String fileName) {
+        int versionCounter = 1;
         String dest = baseDest + fileName + "_V" + versionCounter + ".pdf";
 
         while (new File(dest).exists()) {
@@ -65,7 +65,7 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
     }
 
 
-    private void addImageToDocument(Document document, String imagePath, boolean isHeader) throws MalformedURLException {
+    private static void addImageToDocument(Document document, String imagePath, boolean isHeader) throws MalformedURLException {
         Image image = new Image(ImageDataFactory.create(imagePath));
         image.scaleToFit(document.getPdfDocument().getDefaultPageSize().getWidth(),
                 document.getPdfDocument().getDefaultPageSize().getHeight());
@@ -74,7 +74,7 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
         document.add(image.setHorizontalAlignment(HorizontalAlignment.CENTER));
     }
 
-    private void addTableArea(Document document) {
+    private static void addTableArea(Document document) {
         // Adding space for the table
         document.add(new com.itextpdf.layout.element.Paragraph("\n\n\n\n\n\n")); // You can adjust the space as needed
 
@@ -82,7 +82,7 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
         addTableToDocument(document);
     }
 
-    private void addTableToDocument(Document document) {
+    private static void addTableToDocument(Document document) {
         // Adding static table with specified column names
         Table table = new Table(7); // 7 columns
         table.setWidth(UnitValue.createPercentValue(80)); // Set width to 80% of the page
@@ -104,5 +104,26 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
     private void handleException(Exception e) {
         System.err.println("An error occurred: " + e.getMessage());
         e.printStackTrace();
+    }
+
+    private static void addDefaultHeaderAndFooter(Document document) throws MalformedURLException {
+        // Adding default header
+        addImageToDocument(document, headerPngPath, true);
+
+        // Adding default footer
+        addImageToDocument(document, footerPngPath, false);
+    }
+
+    private static void addNewPageWithHeaderAndFooter(Document document) throws MalformedURLException {
+        document.add(new AreaBreak());
+
+        // Adding header for the new page
+        addImageToDocument(document, headerPngPath, true);
+
+        // Adding table area for the new page
+        addTableArea(document);
+
+        // Adding footer for the new page
+        addImageToDocument(document, footerPngPath, false);
     }
 }
