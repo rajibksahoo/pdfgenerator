@@ -3,3 +3,9 @@ pdf:
   headerPngPath: "C:/Users/Admin/Downloads/dietplans_output/source/MMDT_Header.png"
   footerPngPath: "C:/Users/Admin/Downloads/dietplans_output/source/MMDT_Footer.png"
 
+notion:
+  api:
+    key: secret_AJjzU3jJxomUWWcLgs0eLwWIHLJb12frIBobq0xKwi1
+  database:
+    id: 5eee4c003c4d4fb1b774454e966011c2
+
