@@ -5,6 +5,7 @@ import com.mmdt.pdfgenerator.data.MealPOJO;
 import com.mmdt.pdfgenerator.data.NotionResponse;
 import com.mmdt.pdfgenerator.dietplan.NotionService;
 import com.mmdt.pdfgenerator.mapper.NotionResponseMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class NotionServiceImpl implements NotionService {
 
     private static final String NOTION_API_URL = "https://api.notion.com/v1/databases/{databaseId}/query";
 
+    @Autowired
     private final RestTemplate restTemplate;
 
     public NotionServiceImpl(RestTemplate restTemplate) {

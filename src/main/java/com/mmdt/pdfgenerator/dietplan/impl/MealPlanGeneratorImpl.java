@@ -30,6 +30,9 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
         this.pdfConfig = pdfConfig;
     }
 
+    @Autowired
+    private NotionServiceImpl notionService;
+
     @Override
     public String generateMealPlanPDF(String fileName) {
         String dest = getVersionedFileName(pdfConfig.getBaseDest(), fileName);
@@ -101,6 +104,9 @@ public class MealPlanGeneratorImpl implements MealPlanGenerator {
         table.addCell("Fat");
         table.addCell("Fiber");
         table.addCell("Calories");
+
+
+
 
         // Adding table to the document
         document.add(table.setTextAlignment(TextAlignment.CENTER));
